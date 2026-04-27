@@ -77,6 +77,10 @@ class WindowManager {
             onFocus: options.onFocus || null
         };
 
+        const clamped = this._clampWindowPosition(windowData, windowData.x, windowData.y);
+        windowData.x = clamped.x;
+        windowData.y = clamped.y;
+
         const windowEl = this._createWindowElement(windowData);
         windowData.element = windowEl;
         
@@ -176,6 +180,24 @@ class WindowManager {
         btnClose.addEventListener('click', () => this.closeWindow(windowData.id));
     }
 
+    _clampWindowPosition(windowData, x, y) {
+        const workspaceRect = this.workspace.getBoundingClientRect();
+        const HEADER_HEIGHT = 36;
+        const MIN_VISIBLE_WIDTH = 100;
+        const MIN_VISIBLE_HEIGHT = HEADER_HEIGHT;
+        
+        let newX = x;
+        let newY = y;
+        
+        newX = Math.max(newX, -windowData.width + MIN_VISIBLE_WIDTH);
+        newX = Math.min(newX, workspaceRect.width - MIN_VISIBLE_WIDTH);
+        
+        newY = Math.max(newY, -HEADER_HEIGHT + 10);
+        newY = Math.min(newY, workspaceRect.height - MIN_VISIBLE_HEIGHT);
+        
+        return { x: newX, y: newY };
+    }
+
     _handleMouseMove(e) {
         if (this.dragState.isDragging) {
             const windowData = this.windows.get(this.dragState.windowId);
@@ -184,8 +206,13 @@ class WindowManager {
             const deltaX = e.clientX - this.dragState.startX;
             const deltaY = e.clientY - this.dragState.startY;
             
-            windowData.x = this.dragState.startLeft + deltaX;
-            windowData.y = this.dragState.startTop + deltaY;
+            let newX = this.dragState.startLeft + deltaX;
+            let newY = this.dragState.startTop + deltaY;
+            
+            const clamped = this._clampWindowPosition(windowData, newX, newY);
+            
+            windowData.x = clamped.x;
+            windowData.y = clamped.y;
             
             windowData.element.style.left = `${windowData.x}px`;
             windowData.element.style.top = `${windowData.y}px`;
