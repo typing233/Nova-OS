@@ -1,0 +1,180 @@
+.window {
+    position: absolute;
+    background: rgba(30, 30, 50, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    min-height: 200px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    z-index: 1000;
+}
+
+.window.focused {
+    box-shadow: 
+        0 25px 70px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(99, 102, 241, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+.window.maximized {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.window-header {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+    background: rgba(40, 40, 60, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: move;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.window-header.dragging {
+    cursor: grabbing;
+}
+
+.window-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.window-title {
+    flex: 1;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.window.focused .window-title {
+    color: #fff;
+}
+
+.window-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.window-controls button {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.window-controls button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.window-controls .btn-close:hover {
+    background: #ef4444;
+}
+
+.window-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.window-content ::slotted(*) {
+    width: 100%;
+    height: 100%;
+}
+
+.resize-handle {
+    position: absolute;
+    z-index: 10;
+}
+
+.resize-handle.resize-n,
+.resize-handle.resize-s {
+    left: 8px;
+    right: 8px;
+    height: 8px;
+}
+
+.resize-handle.resize-n {
+    top: -4px;
+    cursor: ns-resize;
+}
+
+.resize-handle.resize-s {
+    bottom: -4px;
+    cursor: ns-resize;
+}
+
+.resize-handle.resize-e,
+.resize-handle.resize-w {
+    top: 8px;
+    bottom: 8px;
+    width: 8px;
+}
+
+.resize-handle.resize-e {
+    right: -4px;
+    cursor: ew-resize;
+}
+
+.resize-handle.resize-w {
+    left: -4px;
+    cursor: ew-resize;
+}
+
+.resize-handle.resize-ne,
+.resize-handle.resize-nw,
+.resize-handle.resize-se,
+.resize-handle.resize-sw {
+    width: 16px;
+    height: 16px;
+}
+
+.resize-handle.resize-ne {
+    top: -4px;
+    right: -4px;
+    cursor: nesw-resize;
+}
+
+.resize-handle.resize-nw {
+    top: -4px;
+    left: -4px;
+    cursor: nwse-resize;
+}
+
+.resize-handle.resize-se {
+    bottom: -4px;
+    right: -4px;
+    cursor: nwse-resize;
+}
+
+.resize-handle.resize-sw {
+    bottom: -4px;
+    left: -4px;
+    cursor: nesw-resize;
+}

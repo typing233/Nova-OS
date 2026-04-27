@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaOS - 浏览器虚拟桌面</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/window.css">
+    <link rel="stylesheet" href="css/terminal.css">
+    <link rel="stylesheet" href="css/app-store.css">
+</head>
+<body>
+    <div id="desktop-env">
+        <div id="workspace">
+            <div id="desktop-icons"></div>
+        </div>
+        <div id="taskbar">
+            <div id="start-button">
+                <span class="logo">◇</span>
+                <span>Nova</span>
+            </div>
+            <div id="taskbar-apps"></div>
+            <div id="system-tray">
+                <span id="clock"></span>
+            </div>
+        </div>
+        <div id="start-menu" class="hidden">
+            <div class="start-menu-content">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索应用..." id="app-search">
+                </div>
+                <div class="app-list" id="start-menu-apps"></div>
+            </div>
+        </div>
+    </div>
+
+    <template id="window-template">
+        <div class="window">
+            <div class="window-header">
+                <div class="window-icon"></div>
+                <div class="window-title"></div>
+                <div class="window-controls">
+                    <button class="btn-minimize" title="最小化">_</button>
+                    <button class="btn-maximize" title="最大化">□</button>
+                    <button class="btn-close" title="关闭">×</button>
+                </div>
+            </div>
+            <div class="window-content"></div>
+            <div class="resize-handle resize-n"></div>
+            <div class="resize-handle resize-e"></div>
+            <div class="resize-handle resize-s"></div>
+            <div class="resize-handle resize-w"></div>
+            <div class="resize-handle resize-ne"></div>
+            <div class="resize-handle resize-nw"></div>
+            <div class="resize-handle resize-se"></div>
+            <div class="resize-handle resize-sw"></div>
+        </div>
+    </template>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
