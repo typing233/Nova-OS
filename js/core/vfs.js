@@ -93,19 +93,6 @@ class VFS {
         return { parent, name };
     }
 
-    async _transaction(mode, callback) {
-        return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction([STORE_NAME], mode);
-            const store = transaction.objectStore(STORE_NAME);
-            
-            transaction.oncomplete = () => resolve();
-            transaction.onerror = () => reject(transaction.error);
-            transaction.onabort = () => reject(new Error('Transaction aborted'));
-
-            callback(store, transaction);
-        });
-    }
-
     async exists(path) {
         const normalized = this._normalizePath(path);
         return new Promise((resolve) => {
