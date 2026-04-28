@@ -481,7 +481,26 @@ class NovaTerminal extends NovaApp {
                         parts[parts.length - 1] = searchPrefix + matches[0];
                         input.value = parts.join(' ');
                     }
-                } catch (e) {}
+                } catch (e) {
+                    // Silently ignore errors during tab completion (e.g. unreadable dir)
+                }
+                try {
+                    const items = await vfs.readDir(this.cwd);
+                    const matches = items
+                        .filter(item => item.name.startsWith(searchPath))
+                        .map(item => item.type === 'directory' ? item.name + '/' : item.name);
+
+                    if (matches.length === 1) {
+                        parts[parts.length - 1] = matches[0];
+                        input.value = parts.join(' ');
+                    } else if (matches.length > 1) {
+                        this.println('');
+                        this.println(matches.join('  '));
+                        this.printHTML(`<span class="terminal-prompt"><span class="user">${this.username}@${this.hostname}</span>:<span class="path">${this.getDisplayPath()}</span>$ </span><span class="terminal-command">${this.escapeHtml(value)}</span>`);
+                    }
+                } catch (e) {
+                    // Silently ignore errors during tab completion (e.g. unreadable dir)
+                }
             }
         }
     }

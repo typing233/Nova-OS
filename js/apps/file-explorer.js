@@ -44,6 +44,12 @@ class NovaFileExplorer extends NovaApp {
         });
     }
 
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
     async loadCurrentPath() {
         const pathDisplay = this.querySelector('#path-display');
         const fileList = this.querySelector('#file-list');
@@ -66,13 +72,13 @@ class NovaFileExplorer extends NovaApp {
             fileList.innerHTML = `
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px;">
                     ${sortedItems.map(item => `
-                        <div class="file-item" data-path="${item.path}" data-type="${item.type}" 
+                        <div class="file-item" data-path="${this.escapeHtml(item.path)}" data-type="${this.escapeHtml(item.type)}" 
                              style="display: flex; flex-direction: column; align-items: center; padding: 16px 8px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;">
                             <div style="font-size: 32px; margin-bottom: 8px;">
                                 ${item.type === 'directory' ? '📁' : this.getFileIcon(item.name)}
                             </div>
                             <div style="color: #fff; font-size: 12px; text-align: center; word-wrap: break-word; max-width: 100px;">
-                                ${item.name}
+                                ${this.escapeHtml(item.name)}
                             </div>
                             <div style="color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 4px;">
                                 ${this.formatSize(item.size)}

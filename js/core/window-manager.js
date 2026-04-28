@@ -58,8 +58,8 @@ class WindowManager {
             title: options.title || '未命名窗口',
             icon: options.icon || '◇',
             content: options.content || null,
-            x: options.x || this._getDefaultX(),
-            y: options.y || this._getDefaultY(),
+            x: options.x !== undefined ? options.x : this._getDefaultX(),
+            y: options.y !== undefined ? options.y : this._getDefaultY(),
             width: options.width || 800,
             height: options.height || 500,
             minWidth: options.minWidth || 300,
@@ -270,9 +270,11 @@ class WindowManager {
                 header.classList.remove('dragging');
             }
             this.dragState.isDragging = false;
+            this.dragState.windowId = null;
         }
         
         this.resizeState.isResizing = false;
+        this.resizeState.windowId = null;
     }
 
     focusWindow(windowId) {

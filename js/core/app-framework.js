@@ -317,7 +317,7 @@ class AppFramework {
             throw new Error(`App not found in registry: ${appId}`);
         }
 
-        this.installedApps.set(appId, { ...app, isDefault: true });
+        this.installedApps.set(appId, { ...app });
         this.registry.delete(appId);
 
         return true;

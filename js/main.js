@@ -138,7 +138,7 @@ class NovaOS {
             });
         });
 
-        setInterval(() => this.updateTaskbar(), 200);
+        this.taskbarInterval = setInterval(() => this.updateTaskbar(), 200);
     }
 
     toggleStartMenu(show = null) {
@@ -221,6 +221,9 @@ class NovaOS {
     shutdown() {
         if (this.updateClockInterval) {
             clearInterval(this.updateClockInterval);
+        }
+        if (this.taskbarInterval) {
+            clearInterval(this.taskbarInterval);
         }
         console.log('👋 NovaOS 已关闭');
     }
