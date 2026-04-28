@@ -185,6 +185,16 @@ class VFS {
             throw new Error(VFS_ERRORS.NOT_DIRECTORY);
         }
 
+        let createdTime = Date.now();
+        if (await this.exists(normalized)) {
+            try {
+                const existingStat = await this.stat(normalized);
+                createdTime = existingStat.created;
+            } catch (e) {
+                // If reading the existing stat fails, fall back to current time
+            }
+        }
+
         const fileEntry = {
             path: normalized,
             name: name,
@@ -192,7 +202,7 @@ class VFS {
             parent: parent,
             content: content,
             size: content.length,
-            created: Date.now(),
+            created: createdTime,
             modified: Date.now(),
             owner: this.currentUser,
             permissions: 0o644,

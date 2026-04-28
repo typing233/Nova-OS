@@ -104,6 +104,10 @@ class NovaAppStore extends NovaApp {
                 const app = appFramework.getApp(appId);
                 this.showNotification(`✅ 已安装 ${app.name}`);
                 this.render();
+                if (window.NovaOS) {
+                    window.NovaOS.renderDesktopIcons();
+                    window.NovaOS.renderStartMenuApps();
+                }
             }
         } catch (error) {
             this.showNotification(`❌ 安装失败: ${error.message}`);

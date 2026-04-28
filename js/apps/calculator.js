@@ -136,6 +136,11 @@ class NovaCalculator extends NovaApp {
     }
 
     inputDigit(digit) {
+        if (this.displayValue === 'Error') {
+            this.displayValue = digit === '.' ? '0.' : digit;
+            this.waitingForSecondOperand = false;
+            return;
+        }
         if (this.waitingForSecondOperand) {
             this.displayValue = digit;
             this.waitingForSecondOperand = false;
