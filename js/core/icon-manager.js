@@ -3,6 +3,12 @@ class IconManager {
         this.usageStats = new Map();
         this.storageKey = 'novaos_icon_usage';
         this.desktopIconsContainer = null;
+        
+        this.iconWidth = 80;
+        this.iconHeight = 90;
+        this.iconGap = 20;
+        this.cellWidth = this.iconWidth + this.iconGap;
+        this.cellHeight = this.iconHeight + this.iconGap;
     }
 
     init() {
@@ -52,65 +58,88 @@ class IconManager {
             usage: this.getUsageCount(app.id)
         }));
 
-        appsWithUsage.sort((a, b) => b.usage - a.usage);
-
-        const highUsage = [];
-        const mediumUsage = [];
-        const lowUsage = [];
-
-        const maxUsage = Math.max(...appsWithUsage.map(a => a.usage), 1);
-        
-        for (const app of appsWithUsage) {
-            const ratio = app.usage / maxUsage;
-            if (ratio >= 0.5) {
-                highUsage.push(app);
-            } else if (ratio >= 0.2) {
-                mediumUsage.push(app);
-            } else {
-                lowUsage.push(app);
+        appsWithUsage.sort((a, b) => {
+            if (b.usage !== a.usage) {
+                return b.usage - a.usage;
             }
-        }
+            return a.id.localeCompare(b.id);
+        });
 
-        const spiralOrder = this._createSpiralOrder(
-            highUsage,
-            mediumUsage,
-            lowUsage
-        );
-
-        return spiralOrder;
+        return appsWithUsage;
     }
 
-    _createSpiralOrder(high, medium, low) {
-        const result = [];
-        
-        const centerHigh = this._distributeFromCenter(high);
-        const centerMedium = this._distributeFromCenter(medium);
-        const centerLow = this._distributeFromCenter(low);
+    _generateSpiralGrid(maxItems) {
+        const positions = [];
+        const visited = new Set();
+        let x = 0, y = 0;
+        let dx = 0, dy = -1;
+        let layer = 0;
 
-        result.push(...centerHigh);
-        result.push(...centerMedium);
-        result.push(...centerLow);
-
-        return result;
-    }
-
-    _distributeFromCenter(items) {
-        if (items.length === 0) return [];
-        if (items.length === 1) return [items[0]];
-
-        const mid = Math.floor(items.length / 2);
-        const result = [items[mid]];
-
-        for (let i = 1; i <= mid; i++) {
-            if (mid + i < items.length) {
-                result.push(items[mid + i]);
+        for (let i = 0; i < maxItems * 4; i++) {
+            const key = `${x},${y}`;
+            if (!visited.has(key)) {
+                visited.add(key);
+                positions.push({ x, y });
+                if (positions.length >= maxItems) break;
             }
-            if (mid - i >= 0) {
-                result.push(items[mid - i]);
+
+            if (x === y || (x < 0 && x === -y) || (x > 0 && x === 1 - y)) {
+                const temp = dx;
+                dx = -dy;
+                dy = temp;
+                
+                if (dx === 1 && dy === 0) {
+                    layer++;
+                }
             }
+
+            x += dx;
+            y += dy;
         }
 
-        return result;
+        return positions;
+    }
+
+    calculateIconPositions(apps, containerWidth, containerHeight) {
+        const sortedApps = this.sortAppsByUsage(apps);
+        const positions = this._generateSpiralGrid(sortedApps.length);
+
+        const totalWidth = Math.max(...positions.map(p => p.x)) * this.cellWidth + this.iconWidth;
+        const totalHeight = Math.max(...positions.map(p => p.y)) * this.cellHeight + this.iconHeight;
+
+        const minX = Math.min(...positions.map(p => p.x));
+        const minY = Math.min(...positions.map(p => p.y));
+
+        const offsetX = (containerWidth - totalWidth) / 2 - minX * this.cellWidth;
+        const offsetY = 30;
+
+        return sortedApps.map((app, index) => {
+            const pos = positions[index] || { x: 0, y: index };
+            return {
+                ...app,
+                position: {
+                    left: offsetX + pos.x * this.cellWidth,
+                    top: offsetY + pos.y * this.cellHeight,
+                    gridX: pos.x,
+                    gridY: pos.y
+                }
+            };
+        });
+    }
+
+    getGridDimensions(numItems) {
+        const positions = this._generateSpiralGrid(numItems);
+        const xs = positions.map(p => p.x);
+        const ys = positions.map(p => p.y);
+        
+        return {
+            minX: Math.min(...xs),
+            maxX: Math.max(...xs),
+            minY: Math.min(...ys),
+            maxY: Math.max(...ys),
+            width: (Math.max(...xs) - Math.min(...xs)) * this.cellWidth + this.iconWidth,
+            height: (Math.max(...ys) - Math.min(...ys)) * this.cellHeight + this.iconHeight
+        };
     }
 
     getAllStats() {
