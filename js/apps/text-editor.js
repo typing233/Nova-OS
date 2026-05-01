@@ -1,5 +1,6 @@
 import { NovaApp } from '../core/app-framework.js';
 import vfs from '../core/vfs.js';
+import dragDropManager from '../core/drag-drop-manager.js';
 
 class NovaTextEditor extends NovaApp {
     constructor() {
@@ -62,6 +63,48 @@ class NovaTextEditor extends NovaApp {
         editor.addEventListener('input', () => {
             this.isModified = true;
             this.updateStatus();
+        });
+
+        this._setupDragDrop(editor);
+    }
+
+    _setupDragDrop(editor) {
+        dragDropManager.makeDropTarget(this, ['file', 'text'], async (type, data) => {
+            if (type === 'file') {
+                try {
+                    const content = await vfs.readFile(data.path);
+                    editor.value = content;
+                    this.currentFile = data.path;
+                    this.isModified = false;
+                    this.updateStatus();
+                } catch (error) {
+                    alert(`无法打开文件: ${error.message}`);
+                }
+            } else if (type === 'text') {
+                const text = typeof data === 'string' ? data : (data.content || '');
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                const before = editor.value.substring(0, start);
+                const after = editor.value.substring(end);
+                editor.value = before + text + after;
+                editor.selectionStart = start + text.length;
+                editor.selectionEnd = start + text.length;
+                this.isModified = true;
+                this.updateStatus();
+            }
+        });
+
+        editor.addEventListener('dragstart', (e) => {
+            const selectedText = editor.value.substring(
+                editor.selectionStart,
+                editor.selectionEnd
+            );
+            
+            if (selectedText) {
+                dragDropManager.makeDraggable(e.target, 'text', {
+                    content: selectedText
+                });
+            }
         });
     }
 

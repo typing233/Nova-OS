@@ -1,5 +1,6 @@
 import { NovaApp } from '../core/app-framework.js';
 import vfs from '../core/vfs.js';
+import dragDropManager from '../core/drag-drop-manager.js';
 
 class NovaTerminal extends NovaApp {
     constructor() {
@@ -65,6 +66,32 @@ class NovaTerminal extends NovaApp {
             } else if (e.key === 'l' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 this.clear();
+            }
+        });
+
+        this._setupDragDrop(input);
+    }
+
+    _setupDragDrop(input) {
+        dragDropManager.makeDropTarget(this, ['text', 'file'], async (type, data) => {
+            if (type === 'text') {
+                const text = typeof data === 'string' ? data : (data.content || '');
+                input.value = text;
+                input.focus();
+            } else if (type === 'file') {
+                input.value = `cat "${data.path}"`;
+                input.focus();
+            }
+        });
+
+        this.addEventListener('dragstart', (e) => {
+            const selection = window.getSelection();
+            const selectedText = selection.toString();
+            
+            if (selectedText) {
+                dragDropManager.makeDraggable(e.target, 'text', {
+                    content: selectedText
+                });
             }
         });
     }
