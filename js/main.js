@@ -62,16 +62,26 @@ class NovaOS {
 
     renderDesktopIcons() {
         const desktopIcons = document.getElementById('desktop-icons');
+        const workspace = document.getElementById('workspace');
         const installedApps = appFramework.getInstalledApps();
-        const sortedApps = iconManager.sortAppsByUsage(installedApps);
+        
+        const workspaceRect = workspace.getBoundingClientRect();
+        const positionedApps = iconManager.calculateIconPositions(
+            installedApps,
+            workspaceRect.width,
+            workspaceRect.height
+        );
 
-        desktopIcons.innerHTML = sortedApps.map(app => `
+        desktopIcons.innerHTML = positionedApps.map(app => `
             <div class="desktop-icon ${app.usage > 0 ? 'frequently-used' : ''}" 
                  data-app-id="${app.id}" 
-                 data-usage="${app.usage || 0}">
+                 data-usage="${app.usage || 0}"
+                 data-grid-x="${app.position.gridX}"
+                 data-grid-y="${app.position.gridY}"
+                 style="position: absolute; left: ${app.position.left}px; top: ${app.position.top}px;">
+                ${app.usage > 0 ? `<div class="usage-badge" title="已打开 ${app.usage} 次">${app.usage}</div>` : ''}
                 <div class="icon">${app.icon}</div>
                 <div class="label">${app.name}</div>
-                ${app.usage > 0 ? `<div class="usage-badge" title="已打开 ${app.usage} 次">${app.usage}</div>` : ''}
             </div>
         `).join('');
 
