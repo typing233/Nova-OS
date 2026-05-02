@@ -58,3 +58,358 @@ input {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
 }
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+.usage-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(99, 102, 241, 0.9);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+    min-width: 18px;
+    text-align: center;
+}
+
+.desktop-icon.frequently-used {
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.desktop-icon.frequently-used .icon {
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+}
+
+#debug-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-height: 80vh;
+    background: rgba(20, 20, 40, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease;
+}
+
+.debug-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 12px 12px 0 0;
+}
+
+.debug-panel-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.debug-panel-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.debug-panel-close:hover {
+    background: rgba(239, 68, 68, 0.8);
+}
+
+.debug-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.debug-section {
+    margin-bottom: 16px;
+}
+
+.debug-section:last-child {
+    margin-bottom: 0;
+}
+
+.debug-section-header {
+    color: #6366f1;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.debug-section-content {
+    color: #e6edf3;
+}
+
+.debug-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+}
+
+.debug-label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.debug-value {
+    color: #fff;
+    font-weight: 500;
+}
+
+.debug-tree-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    font-size: 13px;
+    gap: 8px;
+}
+
+.debug-tree-item.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-left: 2px solid #6366f1;
+}
+
+.debug-tree-icon {
+    font-size: 16px;
+}
+
+.debug-tree-title {
+    flex: 1;
+    color: #fff;
+}
+
+.debug-tree-meta {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+}
+
+.debug-tree-position {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    font-family: monospace;
+}
+
+.debug-process-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    font-size: 13px;
+    gap: 12px;
+}
+
+.debug-process-item.active {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.debug-process-icon {
+    font-size: 18px;
+}
+
+.debug-process-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.debug-process-name {
+    color: #fff;
+    font-weight: 500;
+}
+
+.debug-process-id {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    font-family: monospace;
+}
+
+.debug-process-state {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.debug-process-state.active {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.debug-process-state.minimized {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.debug-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.debug-btn {
+    flex: 1;
+    padding: 10px 16px;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    border-radius: 6px;
+    color: #a5b4fc;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.debug-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    color: #fff;
+}
+
+.debug-hint {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+}
+
+.debug-drop-zone {
+    padding: 24px 16px;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.debug-drop-zone:hover,
+.debug-drop-zone.dragover {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.05);
+    color: #a5b4fc;
+}
+
+.debug-empty {
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 16px;
+    font-size: 13px;
+}
+
+.drop-active {
+    background: rgba(99, 102, 241, 0.1) !important;
+}
+
+.day-mode .desktop-icon .label {
+    color: #1e1e2e;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
+}
+
+.day-mode .desktop-icon:hover {
+    background: rgba(30, 30, 46, 0.1);
+}
+
+.day-mode #taskbar {
+    background: rgba(255, 255, 255, 0.85);
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+.day-mode #start-button {
+    color: #1e1e2e;
+}
+
+.day-mode #clock {
+    color: #1e1e2e;
+}
+
+.day-mode .taskbar-app {
+    color: #1e1e2e;
+}
+
+.day-mode .taskbar-app.active {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+.day-mode #start-menu {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.day-mode .search-box input {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1e1e2e;
+}
+
+.day-mode .search-box input::placeholder {
+    color: rgba(30, 30, 46, 0.4);
+}
+
+.day-mode .search-box input:focus {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+.day-mode .app-item .name {
+    color: #1e1e2e;
+}
+
+.day-mode .app-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.night-mode .desktop-icon .label {
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.night-mode .desktop-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+}

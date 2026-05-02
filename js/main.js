@@ -1,6 +1,10 @@
 import vfs from './core/vfs.js';
 import windowManager from './core/window-manager.js';
 import appFramework from './core/app-framework.js';
+import wallpaperManager from './core/wallpaper-manager.js';
+import iconManager from './core/icon-manager.js';
+import dragDropManager from './core/drag-drop-manager.js';
+import debugPanel from './core/debug-panel.js';
 
 class NovaOS {
     constructor() {
@@ -22,6 +26,18 @@ class NovaOS {
 
             await appFramework.init();
             console.log('✅ 应用框架已初始化');
+
+            wallpaperManager.init();
+            console.log('✅ 壁纸管理器已初始化');
+
+            iconManager.init();
+            console.log('✅ 图标管理器已初始化');
+
+            dragDropManager.init();
+            console.log('✅ 拖拽管理器已初始化');
+
+            debugPanel.init();
+            console.log('✅ 调试面板已初始化');
 
             this.setupDesktop();
             this.setupEventListeners();
@@ -47,11 +63,15 @@ class NovaOS {
     renderDesktopIcons() {
         const desktopIcons = document.getElementById('desktop-icons');
         const installedApps = appFramework.getInstalledApps();
+        const sortedApps = iconManager.sortAppsByUsage(installedApps);
 
-        desktopIcons.innerHTML = installedApps.map(app => `
-            <div class="desktop-icon" data-app-id="${app.id}">
+        desktopIcons.innerHTML = sortedApps.map(app => `
+            <div class="desktop-icon ${app.usage > 0 ? 'frequently-used' : ''}" 
+                 data-app-id="${app.id}" 
+                 data-usage="${app.usage || 0}">
                 <div class="icon">${app.icon}</div>
                 <div class="label">${app.name}</div>
+                ${app.usage > 0 ? `<div class="usage-badge" title="已打开 ${app.usage} 次">${app.usage}</div>` : ''}
             </div>
         `).join('');
 
@@ -60,6 +80,7 @@ class NovaOS {
                 const appId = icon.dataset.appId;
                 try {
                     await appFramework.launchApp(appId);
+                    this.renderDesktopIcons();
                 } catch (error) {
                     this.showError(`无法启动应用: ${error.message}`);
                 }
@@ -239,5 +260,9 @@ window.NovaOS = novaOS;
 window.vfs = vfs;
 window.windowManager = windowManager;
 window.appFramework = appFramework;
+window.wallpaperManager = wallpaperManager;
+window.iconManager = iconManager;
+window.dragDropManager = dragDropManager;
+window.debugPanel = debugPanel;
 
 export default novaOS;

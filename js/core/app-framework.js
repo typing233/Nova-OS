@@ -1,5 +1,6 @@
 import windowManager from './window-manager.js';
 import vfs from './vfs.js';
+import iconManager from './icon-manager.js';
 
 class NovaApp extends HTMLElement {
     constructor() {
@@ -211,6 +212,8 @@ class AppFramework {
     }
 
     async launchApp(appId, options = {}) {
+        iconManager.recordAppLaunch(appId);
+        
         const app = await this.loadApp(appId);
         if (!app) {
             throw new Error(`Failed to load app: ${appId}`);

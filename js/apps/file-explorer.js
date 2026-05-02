@@ -1,5 +1,6 @@
 import { NovaApp } from '../core/app-framework.js';
 import vfs from '../core/vfs.js';
+import dragDropManager from '../core/drag-drop-manager.js';
 
 class NovaFileExplorer extends NovaApp {
     constructor() {
@@ -89,10 +90,10 @@ class NovaFileExplorer extends NovaApp {
             `;
 
             fileList.querySelectorAll('.file-item').forEach(item => {
+                const path = item.dataset.path;
+                const type = item.dataset.type;
+                
                 item.addEventListener('click', () => {
-                    const path = item.dataset.path;
-                    const type = item.dataset.type;
-                    
                     if (type === 'directory') {
                         this.currentPath = path;
                         this.loadCurrentPath();
@@ -107,6 +108,15 @@ class NovaFileExplorer extends NovaApp {
                 item.addEventListener('mouseleave', () => {
                     item.style.background = 'transparent';
                 });
+
+                if (type === 'file') {
+                    const fileName = path.split('/').pop();
+                    dragDropManager.makeDraggable(item, 'file', {
+                        path: path,
+                        name: fileName,
+                        type: 'file'
+                    });
+                }
             });
 
         } catch (error) {
